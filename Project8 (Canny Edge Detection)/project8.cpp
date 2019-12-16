@@ -10,66 +10,55 @@ int WIDTH;
 int HEIGHT;
 string imageType;
 //Methods go here
-vector<unsigned char> GrayScaleImage(const char *file)
+void GrayScaleImage(const char *file)
 {
-  int wtemp, htemp;
-  string iT;
-  ifstream imageFile(file, ios::in | ios::binary);
+  ifstream imageFile(file);
   short int colorSize;
-  imageFile >> iT >> wtemp >> htemp >> colorSize;
-  imageType = iT;
-  WIDTH = wtemp;
-  HEIGHT = htemp;
-  vector<unsigned char> image(WIDTH * HEIGHT);
-  unsigned char r, g, b;
+  imageFile >> imageType;
+  imageFile >> WIDTH;
+  imageFile >> HEIGHT;
+  imageFile >> colorSize;
+  vector<int> image(WIDTH * HEIGHT);
+  int r, g, b, r1, r2, g1, g2, b1, b2;
   int index = 0;
   if (imageType.compare("P3") == 0)
   {
     while (index < image.size())
-      if (imageFile >> r >> g >> b)
-        image[index++] = (unsigned char)(r + g + b) / 3;
-      else
-        cerr << "/* ERROR: PPM file was not read correctly */" << '\n';
-  }
-  else if (imageType.compare("P6") == 0)
-  {
-    unsigned char temp[3];
-    while (index < image.size())
-      if (imageFile.read((char *)temp, 3))
-        image[index++] = (unsigned char)((temp[1] + temp[2] + temp[3]) / 3);
-      else
-        cerr << "/* ERROR: PPM file was not read correctly */" << '\n';
+      {
+        imageFile >> r >> g >> b >> r1 >> g1 >> b1 >> r2 >> g2 >> b2;
+        string s1 = to_string(r);
+        string s2 = to_string(g);
+        string s3 = to_string(b);
+        int t1 = stoi(s1);
+        int t2 = stoi(s2);
+        int t3 = stoi(s3);
+        if (t1 == t2 == t3)
+        image[index++] = t1;
+        else
+        image[index++] = (int)((t1 + t2 + t3)/3);
+      }
   }
   colorSize += 1;
   if (colorSize != 256)
     for (int i = 0; i < image.size(); i++)
       image[i] = (image[i] + 1) * (256 / colorSize) - 1;
   imageFile.close();
-  return image;
-}
-void GaussianFilter(vector<unsigned char> image)
-{
-}
-//Main driver
-int main()
-{
-  //GrayScale the inputted ppm file
-  cout << "WIDTH: " << WIDTH << endl;
-  cout << "HEIGHT: " << HEIGHT << endl;
-  cout << "PPM TYPE: " << imageType << endl;
   ofstream output;
   output.open("project8ppm.ppm");
   output << imageType << " " << WIDTH << " " << HEIGHT << " 255" << endl;
-  vector<unsigned char> imageMagik;
-  imageMagik = GrayScaleImage("image.ppm");
-  //Apply Gaussian Filter
   for (int h = 0; h < HEIGHT; h++)
   {
     for (int w = 0; w < WIDTH; w++)
     {
-      output << imageMagik[h*WIDTH + w] << " ";
+      output << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " ";
     }
     output << endl;
   }
+}
+
+//Main driver
+int main()
+{
+  GrayScaleImage("image.ppm");
   return 0;
 }
