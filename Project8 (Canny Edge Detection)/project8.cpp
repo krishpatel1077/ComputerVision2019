@@ -9,6 +9,7 @@ using namespace std;
 int WIDTH;
 int HEIGHT;
 string imageType;
+vector<int> outputppm;
 //Methods go here
 void GrayScaleImage(const char *file)
 {
@@ -54,11 +55,32 @@ void GrayScaleImage(const char *file)
     }
     output << endl;
   }
+  outputppm = image;
 }
-
+void GaussianBlur(vector<int> imagevector)
+{
+  int filtersize = 5;
+  for (int h = 4; h < HEIGHT-4; h++)
+  {
+    for (int w = 4; w < WIDTH-4; w++)
+    {
+      int sum;
+      for (int i = 0; i < filtersize; i++)
+      {
+          for (int j = 0; j < filtersize; j++)
+          {
+            
+          }
+      }
+    }
+  }
+}
 //Main driver
 int main()
 {
+  //GrayScale using input ppm file image.ppm
   GrayScaleImage("image.ppm");
+  //Gaussian Blur using project8ppm.ppm
+  GaussianBlur(outputppm);
   return 0;
 }
