@@ -44,6 +44,34 @@ void GrayScaleImage(const char *file)
     for (int i = 0; i < image.size(); i++)
       image[i] = (image[i] + 1) * (256 / colorSize) - 1;
   imageFile.close();
+  outputppm = image;
+}
+void GaussianBlur(vector<int> imagevector)
+{
+  int filtersize = 3;
+  int index = filtersize - 1;
+  for (int h = index; h < HEIGHT-index; h++)
+  {
+    for (int w = index; w < WIDTH-index; w++)
+    {
+      int sum = imagevector[h * WIDTH + w];
+      for (int i = 1; i < filtersize; i++)
+      {
+          for (int j = 1; j < filtersize; j++)
+          {
+            sum += imagevector[(h+i) * WIDTH + (w+j)];
+            sum += imagevector[(h+i) * WIDTH + (w-j)];
+            sum += imagevector[(h-i) * WIDTH + (w+j)];
+            sum += imagevector[(h-i) * WIDTH + (w-j)];
+          }
+      }
+      double average = (double) sum / (filtersize * filtersize - 1);
+      imagevector[h * WIDTH + w] = (int) average;
+    }
+  }
+}
+void WriteToPPM(vector<int> image)
+{
   ofstream output;
   output.open("project8ppm.ppm");
   output << imageType << " " << WIDTH << " " << HEIGHT << " 255" << endl;
@@ -55,32 +83,14 @@ void GrayScaleImage(const char *file)
     }
     output << endl;
   }
-  outputppm = image;
-}
-void GaussianBlur(vector<int> imagevector)
-{
-  int filtersize = 5;
-  for (int h = 4; h < HEIGHT-4; h++)
-  {
-    for (int w = 4; w < WIDTH-4; w++)
-    {
-      int sum;
-      for (int i = 0; i < filtersize; i++)
-      {
-          for (int j = 0; j < filtersize; j++)
-          {
-            
-          }
-      }
-    }
-  }
 }
 //Main driver
 int main()
 {
   //GrayScale using input ppm file image.ppm
-  GrayScaleImage("image.ppm");
+  GrayScaleImage("cool.ppm");
   //Gaussian Blur using project8ppm.ppm
   GaussianBlur(outputppm);
+  WriteToPPM(outputppm);
   return 0;
 }
