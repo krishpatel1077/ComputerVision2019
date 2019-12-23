@@ -66,6 +66,7 @@ void GaussianBlur(vector<int> imagevector)
           }
       }
       double average = (double) sum / (filtersize * filtersize - 1);
+      cout << average << endl;
       imagevector[h * WIDTH + w] = (int) average;
     }
   }
@@ -88,7 +89,7 @@ void WriteToPPM(vector<int> image)
 int main()
 {
   //GrayScale using input ppm file image.ppm
-  GrayScaleImage("cool.ppm");
+  GrayScaleImage("image.ppm");
   //Gaussian Blur using project8ppm.ppm
   GaussianBlur(outputppm);
   WriteToPPM(outputppm);
