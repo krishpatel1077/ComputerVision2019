@@ -1,0 +1,11 @@
+1)input image as ppm
+2)Apply Gaussian filter on ppm
+3)Find intensity gradients of image
+4)Apply non-maximum suppression to
+get rid of suprious edge detection
+5)Apply double treshold to determine
+potential edges
+6)Track edge by hysterisis:
+remove all the other edges that
+are weak and not connected to
+strong edges.
