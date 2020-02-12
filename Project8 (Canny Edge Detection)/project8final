@@ -1,10 +1,13 @@
-# 1 "/home/rootuser/Documents/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp"
+# 1 "/home/rootuser/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp"
 # 1 "/usr/bin//"
 # 1 "<built-in>"
 # 1 "<command-line>"
 # 1 "/usr/include/stdc-predef.h" 1 3 4
 # 1 "<command-line>" 2
-# 1 "/home/rootuser/Documents/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp"
+# 1 "/home/rootuser/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp"
+
+
+
 # 1 "/usr/include/c++/7/iostream" 1 3
 # 36 "/usr/include/c++/7/iostream" 3
        
@@ -28158,7 +28161,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 
 }
-# 2 "/home/rootuser/Documents/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp" 2
+# 5 "/home/rootuser/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp" 2
 # 1 "/usr/include/c++/7/fstream" 1 3
 # 36 "/usr/include/c++/7/fstream" 3
        
@@ -30510,7 +30513,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 }
 # 1082 "/usr/include/c++/7/fstream" 2 3
-# 3 "/home/rootuser/Documents/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp" 2
+# 6 "/home/rootuser/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp" 2
 # 1 "/usr/include/c++/7/vector" 1 3
 # 58 "/usr/include/c++/7/vector" 3
        
@@ -34402,7 +34405,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 }
 # 70 "/usr/include/c++/7/vector" 2 3
-# 4 "/home/rootuser/Documents/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp" 2
+# 7 "/home/rootuser/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp" 2
 # 1 "/usr/include/c++/7/math.h" 1 3
 # 36 "/usr/include/c++/7/math.h" 3
 # 1 "/usr/include/c++/7/cmath" 1 3
@@ -38726,7 +38729,7 @@ using std::scalbln;
 using std::scalbn;
 using std::tgamma;
 using std::trunc;
-# 5 "/home/rootuser/Documents/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp" 2
+# 8 "/home/rootuser/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp" 2
 # 1 "/usr/include/c++/7/ctime" 1 3
 # 39 "/usr/include/c++/7/ctime" 3
        
@@ -38748,51 +38751,45 @@ namespace std
   using ::localtime;
   using ::strftime;
 }
-# 6 "/home/rootuser/Documents/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp" 2
+# 9 "/home/rootuser/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp" 2
 # 1 "/usr/include/c++/7/cstdlib" 1 3
 # 39 "/usr/include/c++/7/cstdlib" 3
        
 # 40 "/usr/include/c++/7/cstdlib" 3
-# 7 "/home/rootuser/Documents/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp" 2
+# 10 "/home/rootuser/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp" 2
 
 
-# 8 "/home/rootuser/Documents/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp"
+# 11 "/home/rootuser/ComputerVision2019/Project8 (Canny Edge Detection)/project8final.cpp"
 using namespace std;
 int WIDTH;
 int HEIGHT;
 string imageType;
+using namespace std;
 class Pixel
 {
     private:
-        int r, g, b, totalnum;
+        int r, g, b;
     public:
         Pixel()
         {
             r = 0;
             g = 0;
             b = 0;
-            totalnum = -1;
         }
-        Pixel(int total)
-        {
-           totalnum = total;
-        }
+
         Pixel(int x, int y, int z)
         {
-            r = x; g = y; b = z; totalnum = -1;
+            r = x; g = y; b = z;
         }
         int totalvalue()
         {
-            if (totalnum != -1)
-            {
-                return totalnum;
-            }
             string s, s1, s2;
-            s = "" + r;
-            s1 = "" + g;
-            s2 = "" + b;
+            s = to_string(r);
+            s1 = to_string(g);
+            s2 = to_string(b);
             string total = s + s1 + s2;
-            totalnum = stoi(total);
+            return stoi(total);
+
         }
         string toString()
         {
@@ -38816,11 +38813,12 @@ void GrayScaleImage(const char *filename)
   while (index < image.size())
   {
       imageFile >> r >> g >> b >> r1 >> g1 >> b1 >> r2 >> g2 >> b2;
-      Pixel p = Pixel(r, g, b);
-      Pixel p1 = Pixel(r1, g1, b1);
-      Pixel p2 = Pixel(r2, g2, b2);
-      int average = (p.totalvalue() + p1.totalvalue() + p2.totalvalue()) / 3;
-      image[index] = Pixel(average);
+      int averager = (r + r1 + r2)/3;
+      int averageg = (g + g1 + g2)/3;
+      int averageb = (b + b1 + b2)/3;
+      Pixel p = Pixel(averager, averageg, averageb);
+      image[index] = p;
+      index++;
   }
   colorSize += 1;
   imageFile.close();

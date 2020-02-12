@@ -4,6 +4,7 @@
 #include "math.h"
 #include <ctime>
 #include <cstdlib>
+#include <iomanip>
 #include <string>
 using namespace std;
 int WIDTH;
@@ -11,7 +12,7 @@ int HEIGHT;
 string imageType;
 vector<int> outputppm;
 //Methods go here
-void GrayScaleImage(const char *file)
+void readToVector(const char *file)
 {
   ifstream imageFile(file);
   short int colorSize;
@@ -20,13 +21,13 @@ void GrayScaleImage(const char *file)
   imageFile >> HEIGHT;
   imageFile >> colorSize;
   vector<int> image(WIDTH * HEIGHT);
-  int r, g, b, r1, r2, g1, g2, b1, b2;
+  int r, g, b;
   int index = 0;
   if (imageType.compare("P3") == 0)
   {
     while (index < image.size())
       {
-        imageFile >> r >> g >> b >> r1 >> g1 >> b1 >> r2 >> g2 >> b2;
+        imageFile >> r >> g >> b;
         string s1 = to_string(r);
         string s2 = to_string(g);
         string s3 = to_string(b);
@@ -46,30 +47,51 @@ void GrayScaleImage(const char *file)
   imageFile.close();
   outputppm = image;
 }
-void GaussianBlur(vector<int> imagevector)
+int matrixMulti(double gk[][3], int array[])
 {
-  int filtersize = 3;
-  int index = filtersize - 1;
-  for (int h = index; h < HEIGHT-index; h++)
+double total = 0;
+total += gk[0][0] * array[0];
+total += gk[0][1] * array[1];
+total += gk[0][2] * array[2];
+total += gk[1][0] * array[3];
+total += gk[1][1] * array[4];
+total += gk[1][2] * array[5];
+total += gk[2][0] * array[6];
+total += gk[2][1] * array[7];
+total += gk[2][2] * array[8];
+total = total/25;
+return (int)total;
+}
+void gaussianBlur(vector<int> image)
+{
+vector<int> pointer = image;
+double gk[3][3];
+gk[0][0] = 1/16;
+gk[0][2] = 1/16;
+gk[2][0] = 1/16;
+gk[2][2] = 1/16;
+gk[0][1] = 1/8;
+gk[1][2] = 1/8;
+gk[1][0] = 1/8;
+gk[2][1] = 1/8;
+gk[1][1] = 1/4;
+int array[9];
+for (int w = 0; w < WIDTH-1; w++)
+  for (int h = 0; h < HEIGHT-1; h++)
   {
-    for (int w = index; w < WIDTH-index; w++)
-    {
-      int sum = imagevector[h * WIDTH + w];
-      for (int i = 1; i < filtersize; i++)
-      {
-          for (int j = 1; j < filtersize; j++)
-          {
-            sum += imagevector[(h+i) * WIDTH + (w+j)];
-            sum += imagevector[(h+i) * WIDTH + (w-j)];
-            sum += imagevector[(h-i) * WIDTH + (w+j)];
-            sum += imagevector[(h-i) * WIDTH + (w-j)];
-          }
-      }
-      double average = (double) sum / (filtersize * filtersize - 1);
-      cout << average << endl;
-      imagevector[h * WIDTH + w] = (int) average;
-    }
+    array[0] = image[h * WIDTH + w];
+    array[1] = image[h * WIDTH + (w+1)];
+    array[2] = image[h * WIDTH + (w+2)];
+    array[3] = image[(h+1) * WIDTH + w];
+    array[4] = image[(h+1) * WIDTH + (w+1)];
+    array[5] = image[(h+1) * WIDTH + (w+2)];
+    array[6] = image[(h+2) * WIDTH + w];
+    array[7] = image[(h+2) * WIDTH + (w+1)];
+    array[8] = image[(h+2) * WIDTH + (w+2)];
+
+    pointer[(h+1) * WIDTH + (w+1)] = matrixMulti(gk, array);    
   }
+outputppm = pointer;
 }
 void WriteToPPM(vector<int> image)
 {
@@ -80,18 +102,23 @@ void WriteToPPM(vector<int> image)
   {
     for (int w = 0; w < WIDTH; w++)
     {
-      output << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " " << image[h*WIDTH + w] << " ";
+      output << image[h * WIDTH + w] << " " << image[h * WIDTH + w] << " " << image[h * WIDTH + w] << " " << image[h * WIDTH + w] << " " << image[h * WIDTH + w] << " " << image[h * WIDTH + w] << " " << image[h * WIDTH + w] << " " << image[h * WIDTH + w] << " " << image[h * WIDTH + w] << " ";
     }
     output << endl;
   }
+}
+void nonMaxSuppression(vector<int> image)
+{
+
 }
 //Main driver
 int main()
 {
   //GrayScale using input ppm file image.ppm
-  GrayScaleImage("image.ppm");
+  readToVector("image.ppm");
   //Gaussian Blur using project8ppm.ppm
-  GaussianBlur(outputppm);
+   gaussianBlur(outputppm);
+   nonMaxSuppression(outputppm);
   WriteToPPM(outputppm);
   return 0;
 }
