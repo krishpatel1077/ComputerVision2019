@@ -1,73 +1,58 @@
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include <iostream>
+//Krish Patel
+//Zacharias Period 3
+#include <opencv2/opencv.hpp>
 #include <stdio.h>
+#include <iostream>
+#include <math.h>
+
 using namespace cv;
 using namespace std;
-int main()
-{
-    Mat image;
 
-    image = imread("coin-detection.jpg", CV_LOAD_IMAGE_GRAYSCALE);
-    // Take any image but make sure its in the same folder.
-    // first argument denotes the image to be loaded.
-    // second argument specifies the image format as follows:
-    // CV_LOAD_IMAGE_UNCHANGED (<0) loads the image as it is.
-    // CV_LOAD_IMAGE_GRAYSCALE ( 0) loads the image in Gray scale.
-    // CV_LOAD_IMAGE_COLOR (>0) loads the image in the BGR format.
-    // If the second argument is not there, it is implied CV_LOAD_IMAGE_COLOR.
+//global variables
+int pCount;
+int dCount;
+int qCount;
+int nCount;
+int main(int argc, char** argv) {
+    const char* filename = argc >= 2 ? argv[1] : "coinsEasy.jpg";
+    Mat src = imread(samples::findFile(filename), IMREAD_COLOR);
 
-    vector coin;
-    // A vector data type to store the details of coins.
-
-    HoughCircles(image, coin, CV_HOUGH_GRADIENT, 2, 20, 450, 60, 0, 0);
-    // Argument 1: Input image mode
-    // Argument 2: A vector that stores 3 values: x,y and r for each circle.
-    // Argument 3: CV_HOUGH_GRADIENT: Detection method.
-    // Argument 4: The inverse ratio of resolution.
-    // Argument 5: Minimum distance between centers.
-    // Argument 6: Upper threshold for Canny edge detector.
-    // Argument 7: Threshold for center detection.
-    // Argument 8: Minimum radius to be detected. Put zero as default
-    // Argument 9: Maximum radius to be detected. Put zero as default
-
-    int l = coin.size();
-    // Get the number of coins.
-
-    cout << "\n The number of coins is: " << l << "\n\n";
-
-    // To draw the detected circles.
-    for (size_t i = 0; i < coin.size(); i++)
-    {
-        Point center(cvRound(coin[i][0]), cvRound(coin[i][1]));
-        // Detect center
-        // cvRound: Rounds floating point number to nearest integer.
-        int radius = cvRound(coin[i][2]);
-        // To get the radius from the second argument of vector coin.
-        circle(image, center, 3, Scalar(0, 255, 0), -1, 8, 0);
-        // circle center
-        //  To get the circle outline.
-        circle(image, center, radius, Scalar(0, 0, 255), 3, 8, 0);
-        // circle outline
-        cout << " Center location for circle " << i + 1 << " :" << center << "\n Diameter : " << 2 * radius << "\n";
+    if (src.empty()) {
+        printf(" Error opening image\n");
+        printf(" Program Arguments: [image_name -- default %s] \n", filename);
+        return -1;
     }
-    cout << "\n";
-
-    namedWindow("Coin Counter", CV_WINDOW_AUTOSIZE);
-    // Create a window called
-    //"A_good_name".
-    // first argument: name of the window.
-    // second argument: flag- types:
-    // WINDOW_NORMAL : The user can resize the window.
-    // WINDOW_AUTOSIZE : The window size is automatically adjusted to fit the
-    // displayed image() ), and you cannot change the window size manually.
-    // WINDOW_OPENGL : The window will be created with OpenGL support.
-
-    imshow("Coin Counter", image);
-    // first argument: name of the window
-    // second argument: image to be shown(Mat object)
-
-    waitKey(0); // Wait for infinite time for a key press.
-
-    return 0; // Return from main function.
+    Mat gray;
+    cvtColor(src, gray, COLOR_BGR2GRAY);
+    GaussianBlur(gray, gray, Size(5, 5), 20);
+    vector<Vec3f> circles;
+    HoughCircles(gray, circles, HOUGH_GRADIENT, 2, 70, 104, 52, 85, 120);
+    for( size_t i = 0; i < circles.size(); i++ )
+    {
+        Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+        int radius = cvRound(circles[i][2]);
+        // draw the circle center
+        circle( src, center, 3, Scalar(0,255,0), -1, 8, 0 );
+        if (radius >= 86 && radius < 95)
+            putText(src, "PENNY.", center, FONT_HERSHEY_COMPLEX_SMALL, 0.8, Scalar(200,200,250), 1, CV_8U);
+        // draw the circle outline
+        circle( src, center, radius, Scalar(0, 0,255), 10, 8, 0 );
+    }
+    for (size_t index = 0; index < circles.size(); index++)
+    {
+        cout << cvRound(circles[index][2]) << endl;
+        int radius = cvRound(circles[index][2]);
+        if (radius >= 86 && radius < 95)
+        {
+            pCount++;
+        }
+    }
+    float total = 0.0;
+    total = (float)(pCount * 0.01) + (float)(nCount * 0.05) + (float)(dCount * 0.1) + (float)(qCount * 0.25);
+    cout << "Penny Count: " << pCount << endl;
+    cout << "TOTAL COIN COUNT ($$$): " << total << endl;
+    namedWindow("Detected Circles");
+    imshow("Detected Circles", src);
+    waitKey();
+    return 0;
 }

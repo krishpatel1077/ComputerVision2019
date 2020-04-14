@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+project( /ComputerVision2019/Project9_(Coins - OPENCV) )
+find_package( OpenCV REQUIRED )
+add_executable( DisplayImage project9.cpp )
+target_link_libraries( DisplayImage ${OpenCV_LIBS} )
