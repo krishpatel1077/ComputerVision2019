@@ -1,0 +1,3 @@
+/home/homeuser/Documents/ComputerVision2019/Project10 (Platonic Solids)/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/homeuser/Documents/ComputerVision2019/Project10 (Platonic Solids)/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/homeuser/Documents/ComputerVision2019/Project10 (Platonic Solids)/cmake-build-debug/CMakeFiles/DisplayImage.dir

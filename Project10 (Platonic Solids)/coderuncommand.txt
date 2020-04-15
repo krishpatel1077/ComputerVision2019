@@ -1,0 +1,3 @@
+g++ project10.cpp -o DisplayImage `pkg-config --cflags --libs opencv4`
+./DisplayImage
+

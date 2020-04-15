@@ -1,0 +1,1 @@
+/usr/bin/c++  -g  -rdynamic CMakeFiles/DisplayImage.dir/project10.cpp.o  -o DisplayImage 
