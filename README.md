@@ -1,4 +1,4 @@
 # ComputerVision2019
 Zacharias Period 3
 
-FOLDER FOR Labs (Computer Vision 1, Coronavirus cancelled Computer Vision 2)
+File explorer Lab directory (its a little bit messy but its self explanatory)
