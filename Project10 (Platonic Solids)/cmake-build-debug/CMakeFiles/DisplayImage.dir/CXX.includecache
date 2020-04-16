@@ -9,10 +9,10 @@
 /home/homeuser/Documents/ComputerVision2019/Project10 (Platonic Solids)/project10.cpp
 opencv2/opencv.hpp
 -
-stdio.h
+cstdio
 -
 iostream
 -
-math.h
+cmath
 -
 
